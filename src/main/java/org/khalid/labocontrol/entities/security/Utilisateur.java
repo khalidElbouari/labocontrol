@@ -1,5 +1,6 @@
 package org.khalid.labocontrol.entities.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,8 +25,9 @@ public class Utilisateur implements UserDetails {
     private String prenom;
     @DateTimeFormat(pattern = "yyyy-MM-dd") 
     private Date datenaiss;
-    private String photo;
-    @Transient 
+    private String photoName;
+    @Transient
+    @JsonIgnore
     private MultipartFile profilePicture;
     private String username;
     private String password;
@@ -41,6 +43,19 @@ public class Utilisateur implements UserDetails {
     @JsonIgnoreProperties("utilisateurs") 
     private Set<Role> roles = new HashSet<>();
 
+
+    // Constructor with arguments
+    public Utilisateur(String nom, String prenom, Date datenaiss, String username, String password, boolean enabled) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.datenaiss = datenaiss;
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+    }
+
+    // No-args constructor (needed for JPA)
+    public Utilisateur() {}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -134,14 +149,23 @@ public class Utilisateur implements UserDetails {
         this.enabled = enabled;
     }
 
-	public String getPhoto() {
-		return photo;
+	public String getPhotoName() {
+		return photoName;
 	}
 
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setPhotoName(String photo) {
+		this.photoName = photo;
 	}
-    @JsonIgnoreProperties("utilisateurs") 
+
+    public MultipartFile getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(MultipartFile profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    @JsonIgnoreProperties("utilisateurs")
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub

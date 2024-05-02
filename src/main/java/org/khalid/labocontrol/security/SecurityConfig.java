@@ -28,6 +28,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -57,9 +58,9 @@ public class SecurityConfig {
 				.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.csrf(csrf -> csrf.disable())
 				.cors(cors -> cors.configurationSource(corsConfiguration()))
-				.authorizeHttpRequests(a->a.requestMatchers("/auth/login/**","/login","/","/register","/css/**", "/js/**", "/images/**").permitAll())
+				.authorizeHttpRequests(a->a.requestMatchers("/auth/login/**","/auth/register/**","/images/**").permitAll())
 				.authorizeHttpRequests(ar->ar.anyRequest().authenticated())
-				//.httpBasic(Customizer.withDefaults())
+			//	.httpBasic(Customizer.withDefaults())
 				.oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
 				.build();
 	}
@@ -91,7 +92,7 @@ public class SecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfiguration(){
 		CorsConfiguration corsConfiguration=new CorsConfiguration();
-		corsConfiguration.addAllowedOrigin("*");
+		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Add your frontend URL here
 		corsConfiguration.addAllowedMethod("*");
 		corsConfiguration.addAllowedHeader("*");
 		//corsConfiguration.setExposedHeaders(List.of("x-auth-token"));

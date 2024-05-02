@@ -17,8 +17,7 @@ public class LabocontrolApplication {
     public static void main(String[] args) {
         SpringApplication.run(LabocontrolApplication.class, args);
     }
-/*
-    @Bean
+    /*@Bean
     public CommandLineRunner commandLineRunner(ProductRepository productRepository, CategoryRepository categoryRepository) {
         return args -> {
             // Create and save categories
@@ -36,8 +35,7 @@ public class LabocontrolApplication {
 
             System.out.println("Data initialized successfully!");
         };
-    }
-*/
+    }*/
 
 
 }

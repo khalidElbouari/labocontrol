@@ -1,4 +1,4 @@
-package org.khalid.labocontrol.web;
+package org.khalid.labocontrol.controller;
 
 import org.khalid.labocontrol.entities.Product;
 import org.khalid.labocontrol.service.ProductService;
