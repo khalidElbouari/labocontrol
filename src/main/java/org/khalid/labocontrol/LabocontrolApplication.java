@@ -17,7 +17,7 @@ public class LabocontrolApplication {
     public static void main(String[] args) {
         SpringApplication.run(LabocontrolApplication.class, args);
     }
-    /*@Bean
+ // @Bean
     public CommandLineRunner commandLineRunner(ProductRepository productRepository, CategoryRepository categoryRepository) {
         return args -> {
             // Create and save categories
@@ -27,15 +27,15 @@ public class LabocontrolApplication {
             categoryRepository.saveAll(Arrays.asList(category1, category2));
 
             // Create and save products
-            Product product1 = new Product(null, "Laptop", "High-performance laptop", 1200.0, 10, category1);
-            Product product2 = new Product(null, "T-Shirt", "Casual t-shirt", 25.0, 50, category2);
-            Product product3 = new Product(null, "Smartphone", "Latest smartphone model", 800.0, 20, category1);
+            Product product1 = new Product(null, "T-Shirt", "Casual t-shirt", 25.0, 450, category2,null,null);
+            Product product2 = new Product(null, "ma7laba", "Casual t-shirt and this is a example of a discription", 25.0, 450, category2,null,null);
+            Product product3 = new Product(null, "laptop", "Casual t-shirt", 25.0, 450, category2,null,null);
 
             productRepository.saveAll(Arrays.asList(product1, product2, product3));
 
             System.out.println("Data initialized successfully!");
         };
-    }*/
+    }
 
 
 }

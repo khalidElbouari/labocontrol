@@ -11,7 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
-public class ProfilePictureService {
+public class PictureService {
 
     private static final String UPLOAD_DIR = "src/main/resources/static/images";
 

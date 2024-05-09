@@ -3,7 +3,6 @@ package org.khalid.labocontrol.entities;
 import jakarta.persistence.*;
 
 @Entity
-
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,16 +13,36 @@ public class Product {
     private int stockQuantity;
     @ManyToOne
     private Category category;
-    public Product(Long id, String name, String description, double price, int stockQuantity, Category category) {
+    @Lob
+    @Column(length = 1048576) // Specify the desired length for the column (in bytes)
+    private byte[] imageData;
+
+    // New field for product image
+    private String imagePath; // Add a new attribute to store the image path
+
+
+    public Product(Long id, String name, String description, double price, int stockQuantity, Category category, byte[] imageData, String imagePath) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.category = category;
+        this.imageData = imageData;
+        this.imagePath = imagePath;
     }
+
     public Product() {
     }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,6 +89,14 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

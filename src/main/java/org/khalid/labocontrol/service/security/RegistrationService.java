@@ -8,7 +8,6 @@ import org.khalid.labocontrol.repository.security.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -20,7 +19,7 @@ public class RegistrationService {
     private PasswordEncoder passwordEncoder;
     @Autowired
 
-    private  ProfilePictureService profilePictureService;
+    private PictureService pictureService;
     @Autowired
     public RegistrationService(UtilisateurRepository utilisateurRepository, RoleRepository roleRepository) {
         this.utilisateurRepository = utilisateurRepository;

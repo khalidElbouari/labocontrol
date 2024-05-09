@@ -1,8 +1,7 @@
 package org.khalid.labocontrol.controller.security;
 
 import org.khalid.labocontrol.entities.security.Utilisateur;
-import org.khalid.labocontrol.service.security.CustomUserDetailsService;
-import org.khalid.labocontrol.service.security.ProfilePictureService;
+import org.khalid.labocontrol.service.security.PictureService;
 import org.khalid.labocontrol.service.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,7 @@ public class SecurityController {
     @Autowired
     private RegistrationService registrationService;
     @Autowired
-    private ProfilePictureService profilePictureService;
+    private PictureService pictureService;
 
 
    /* @GetMapping("/profile-picture")
@@ -53,6 +52,7 @@ public class SecurityController {
             );
             // Get the authenticated user details
             Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
+            String fullName=utilisateur.getNom()+' '+utilisateur.getPrenom();
             // Fetch the profile picture URL for the authenticated user
             String profilePictureUrl = "http://localhost:8055/" + utilisateur.getPhotoName();
 
@@ -60,10 +60,11 @@ public class SecurityController {
             String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
             JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                     .issuedAt(instant)
-                    .expiresAt(instant.plus(10, ChronoUnit.MINUTES))
+                    .expiresAt(instant.plus(20, ChronoUnit.MINUTES))
                     .subject(username)
                     .claim("scope", scope)
                     .claim("profilePictureUrl", profilePictureUrl)
+                    .claim("fullName", fullName)
                     .build();
             JwtEncoderParameters jwtEncoderParameters =
                     JwtEncoderParameters.from(
@@ -84,7 +85,7 @@ public class SecurityController {
             // Check if profilePicture is provided before attempting to save it
             String profilePicturePath = null;
             if (profilePicture != null) {
-                profilePicturePath = profilePictureService.saveProfilePicture(profilePicture);
+                profilePicturePath = pictureService.saveProfilePicture(profilePicture);
             }
             // Create a Utilisateur object with the other user data
             Utilisateur utilisateur = new Utilisateur(nom, prenom, null, username, password, true);
