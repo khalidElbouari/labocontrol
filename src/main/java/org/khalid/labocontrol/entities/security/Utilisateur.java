@@ -32,6 +32,9 @@ public class Utilisateur implements UserDetails {
     private String username;
     private String password;
     private boolean enabled=true;//hna par defaut khasha tkon true
+    @Lob
+    @Column(length = 1048576) // Specify the desired length for the column (in bytes)
+    private byte[] imageData;
     
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -45,13 +48,15 @@ public class Utilisateur implements UserDetails {
 
 
     // Constructor with arguments
-    public Utilisateur(String nom, String prenom, Date datenaiss, String username, String password, boolean enabled) {
+    public Utilisateur(String nom, String prenom, Date datenaiss, String username, String password, boolean enabled, byte[] imageData) {
         this.nom = nom;
         this.prenom = prenom;
         this.datenaiss = datenaiss;
         this.username = username;
         this.password = password;
         this.enabled = enabled;
+        this.imageData = imageData;
+
     }
 
     // No-args constructor (needed for JPA)
@@ -163,6 +168,14 @@ public class Utilisateur implements UserDetails {
 
     public void setProfilePicture(MultipartFile profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 
     @JsonIgnoreProperties("utilisateurs")

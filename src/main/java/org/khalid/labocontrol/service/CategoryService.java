@@ -27,5 +27,10 @@ public class CategoryService {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
         return optionalCategory.orElse(null);
     }
-
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+    public void deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
+    }
 }
