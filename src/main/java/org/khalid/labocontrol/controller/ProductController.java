@@ -62,7 +62,6 @@ public class ProductController {
 
             // Save the product to the database
             Product addedProduct = productService.addProduct(product);
-
             return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
         } catch (NumberFormatException e) {
             // Handle invalid category ID format
@@ -71,6 +70,7 @@ public class ProductController {
             // Handle any other exceptions
             return new ResponseEntity<>("Failed to add product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
 
