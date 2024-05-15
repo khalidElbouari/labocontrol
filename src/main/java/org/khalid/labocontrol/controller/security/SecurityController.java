@@ -67,6 +67,7 @@ public class SecurityController {
 
     private String buildJwtToken(Authentication authentication, Utilisateur utilisateur) {
         String fullName = utilisateur.getNom() + ' ' + utilisateur.getPrenom();
+        Long userId = utilisateur.getId();
         Instant instant = Instant.now();
         String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
 
@@ -76,6 +77,7 @@ public class SecurityController {
                 .subject(utilisateur.getUsername())
                 .claim("scope", scope)
                 .claim("fullName", fullName)
+                .claim("userId", userId)
                 .build();
 
         JwtEncoderParameters jwtEncoderParameters =

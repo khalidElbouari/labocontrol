@@ -3,15 +3,13 @@ package org.khalid.labocontrol.entities.security;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.khalid.labocontrol.entities.Cart;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -32,10 +30,12 @@ public class Utilisateur implements UserDetails {
     private String username;
     private String password;
     private boolean enabled=true;//hna par defaut khasha tkon true
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Cart> carts = new ArrayList<>();
     @Lob
     @Column(length = 1048576) // Specify the desired length for the column (in bytes)
     private byte[] imageData;
-    
+
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
@@ -177,6 +177,31 @@ public class Utilisateur implements UserDetails {
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
     }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+    // Method to retrieve the active cart
+    /*public Cart getActiveCart() {
+        // If the user has no carts, create a new active cart
+        if (carts.isEmpty()) {
+            Cart newCart = new Cart();
+            newCart.setUser(this);
+            newCart.setStatus("active"); // Set status as active for new cart
+            carts.add(newCart); // Add the new cart to the user's list of carts
+            return newCart;
+        }
+
+        // Find the first cart with the active status
+        return carts.stream()
+                .filter(cart -> cart.getStatus().equals("active")) // Assuming "active" is the status for active carts
+                .findFirst()
+                .orElse(null);
+    }*/
 
     @JsonIgnoreProperties("utilisateurs")
 	@Override

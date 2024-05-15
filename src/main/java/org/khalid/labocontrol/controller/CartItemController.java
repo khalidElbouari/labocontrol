@@ -29,4 +29,9 @@ public class CartItemController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping("/{id}/quantity")
+    public ResponseEntity<CartItem> updateCartItemQuantity(@PathVariable Long id, @RequestParam int quantity) {
+        CartItem updatedCartItem = cartItemService.updateCartItemQuantity(id, quantity);
+        return ResponseEntity.ok(updatedCartItem);
+    }
 }

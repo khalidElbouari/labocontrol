@@ -2,6 +2,7 @@ package org.khalid.labocontrol.controller;
 
 import org.khalid.labocontrol.entities.Category;
 import org.khalid.labocontrol.entities.Product;
+import org.khalid.labocontrol.service.CartItemService;
 import org.khalid.labocontrol.service.CategoryService;
 import org.khalid.labocontrol.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,15 @@ public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final CartItemService cartItemService;
 
 
     @Autowired
-    public ProductController(ProductService productService,CategoryService categoryService) {
+    public ProductController(ProductService productService,CategoryService categoryService,
+                             CartItemService cartItemService     ) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.cartItemService = cartItemService;
     }
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getProducts() {
@@ -73,33 +77,63 @@ public class ProductController {
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id,
+                                                 @RequestParam("image") MultipartFile image,
+                                                 @RequestParam("name") String name,
+                                                 @RequestParam("description") String description,
+                                                 @RequestParam("category") String category,
+                                                 @RequestParam("stockQuantity") int stockQuantity,
+                                                 @RequestParam("price") double price) {
+        try {
+            // Retrieve the existing product by ID
+            Product existingProduct = productService.getProductById(id);
+            if (existingProduct == null) {
+                return ResponseEntity.notFound().build();
+            }
 
+            // Read image data as byte array
+            byte[] imageData = image.getBytes();
 
+            // Update the existing product with the new values
+            existingProduct.setName(name);
+            existingProduct.setDescription(description);
+            existingProduct.setPrice(price  );
+            existingProduct.setStockQuantity(stockQuantity);
+            Category c=categoryService.getCategoryById(Long.parseLong(category));
+            existingProduct.setCategory(c);
+            existingProduct.setImageData(imageData);
+
+            // Save the updated product to the database
+            Product updatedProduct = productService.updateProduct(existingProduct);
+
+            return ResponseEntity.ok().body(updatedProduct);
+        } catch (Exception e) {
+            // Handle any exceptions
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        boolean deleted = productService.deleteProduct(id);
+        // Check if the product is in any carts
+        boolean isInCarts = cartItemService.isProductInCarts(id);
 
-        if (deleted) {
-            return ResponseEntity.ok().build();
+        if (isInCarts) {
+            // Product is in carts, cannot delete
+            return ResponseEntity.badRequest().build();
         } else {
-            return ResponseEntity.notFound().build();
+            // Product is not in carts, proceed with deletion
+            boolean deleted = productService.deleteProduct(id);
+            if (deleted) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
     }
 
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(id, product);
-
-        if (updatedProduct == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(updatedProduct);
-        }
-    }
 
 }

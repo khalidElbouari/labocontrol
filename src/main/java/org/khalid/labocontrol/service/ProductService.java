@@ -37,34 +37,23 @@ public class ProductService {
         }
     }
 
-    public Product updateProduct(Long id, Product updatedProduct) {
-        Optional<Product> productOptional = productRepository.findById(id);
-
-        if (productOptional.isPresent()) {
-            updatedProduct.setId(id); // Ensure the ID is set correctly
-            return productRepository.save(updatedProduct);
-        } else {
-            return null;
-        }
-    }
-/*
-    public Product addProduct(Product product, MultipartFile image) {
-        // Handle the image file using the PictureService
-        try {
-            String imagePath = pictureService.saveProfilePicture(image);
-            product.setImagePath(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception
-        }
-
-        // Save the product to the database
-        return productRepository.save(product);
-    }
-*/
 
     public Product addProduct(Product product) {
         // Save the product to the database
         return productRepository.save(product);
     }
 
+
+
+    public Product getProductById(Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        return productOptional.orElse(null);
+    }
+
+    public Product updateProduct(Product product) {
+        // This assumes your Product entity is managed by JPA/Hibernate
+        // If it's not, you might need to implement a custom update logic
+        // or use a different approach to update the product
+        return productRepository.save(product);
+    }
 }
