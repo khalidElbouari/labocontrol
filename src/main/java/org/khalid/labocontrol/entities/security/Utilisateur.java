@@ -185,23 +185,7 @@ public class Utilisateur implements UserDetails {
     public void setCarts(List<Cart> carts) {
         this.carts = carts;
     }
-    // Method to retrieve the active cart
-    /*public Cart getActiveCart() {
-        // If the user has no carts, create a new active cart
-        if (carts.isEmpty()) {
-            Cart newCart = new Cart();
-            newCart.setUser(this);
-            newCart.setStatus("active"); // Set status as active for new cart
-            carts.add(newCart); // Add the new cart to the user's list of carts
-            return newCart;
-        }
 
-        // Find the first cart with the active status
-        return carts.stream()
-                .filter(cart -> cart.getStatus().equals("active")) // Assuming "active" is the status for active carts
-                .findFirst()
-                .orElse(null);
-    }*/
 
     @JsonIgnoreProperties("utilisateurs")
 	@Override

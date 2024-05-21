@@ -9,6 +9,7 @@ import org.khalid.labocontrol.repository.CartRepository;
 import org.khalid.labocontrol.service.security.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,62 +28,55 @@ public class CartService {
         this.cartItemRepository = cartItemRepository;
         this.userService = userService;
     }
-
-    public Cart createCart(Cart cart) {
-        return cartRepository.save(cart);
-    }
-
-
-    public Cart addToCart(Utilisateur user, Product product) {
-        Cart cart = getActiveCart(user); // Get the active cart for the user
-        if (cart == null) {
-            cart = new Cart();
-            cart.setUser(user);
-            cart.setStatus("active"); // Set status as active for new cart
-        }
-
-        // Check if the product is already in the cart
-        CartItem existingItem = cartItemRepository.findByCartAndProduct(cart, product);
+    @Transactional
+    public Cart addOrUpdateCart(Utilisateur user, Product product, int quantity) {
+        // Retrieve the active cart for the user, or create a new one if none exists
+        Cart activeCart = getActiveCart(user);
+        // Check if the product is already in the active cart
+        CartItem existingItem = cartItemRepository.findByCartAndProduct(activeCart, product);
         if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + 1); // Increase quantity if product is already in cart
+            existingItem.setQuantity(existingItem.getQuantity() + quantity); // Increase quantity
         } else {
+            // If the product is not in the active cart, create a new cart item
             CartItem newItem = new CartItem();
-            newItem.setCart(cart);
+            newItem.setCart(activeCart);
             newItem.setProduct(product);
-            newItem.setQuantity(1);
-            cart.getCartItems().add(newItem); // Add new cart item to cart
+            newItem.setQuantity(quantity);
+            // Save the new cart item to the database
+            cartItemRepository.save(newItem);
+            // Add the new cart item to the active cart
+            activeCart.getCartItems().add(newItem);
         }
 
-        // Save the updated cart to the database
-        cartRepository.save(cart);
-        return cart;
+        // Save the active cart to the database again to persist any changes
+        cartRepository.save(activeCart);
+        return activeCart;
     }
 
-    public void saveCart(Cart cart) {
-        cartRepository.save(cart);
-    }
-
+    @Transactional
     public Cart getActiveCart(Utilisateur utilisateur) {
-        List<Cart> carts = utilisateur.getCarts();
-        // If the user has no carts, create a new active cart
-        if (carts.isEmpty()) {
-            Cart newCart = new Cart();
-            newCart.setUser(utilisateur);
-            newCart.setStatus("active");
-            return cartRepository.save(newCart);
+        // Retrieve the active cart directly from the database with a lock to prevent concurrent modifications
+        Cart activeCart = cartRepository.findActiveCartByUserId(utilisateur.getId());
+
+        if (activeCart == null) {
+            // If no active cart exists, create a new one and set it as active
+            activeCart = new Cart();
+            activeCart.setUser(utilisateur);
+            activeCart.setStatus("active");
+            activeCart = cartRepository.save(activeCart);
+
+            // Add the new cart to the user's carts
+            utilisateur.getCarts().add(activeCart);
         }
 
-        // Find the first cart with the active status
-        return carts.stream()
-                .filter(cart -> cart.getStatus().equals("active"))
-                .findFirst()
-                .orElse(null);
+        return activeCart;
     }
+
+
 
     public List<CartItem> getCartItems(Long userId) {
         // Retrieve the user's active cart
         Cart cart = cartRepository.findActiveCartByUserId(userId);
-
         // If user has an active cart, fetch its cart items
         if (cart != null) {
             return cartItemRepository.findByCart(cart);
@@ -91,4 +85,6 @@ public class CartService {
             return Collections.emptyList();
         }
     }
+
+
 }

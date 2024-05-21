@@ -8,6 +8,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
     private double price;
     private int stockQuantity;
