@@ -20,9 +20,7 @@ public class CategoryService {
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
-    public Category getCategoryByName(String categoryName) {
-        return categoryRepository.findByName(categoryName);
-    }
+
     public Category getCategoryById(long categoryId) {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
         return optionalCategory.orElse(null);
@@ -32,5 +30,17 @@ public class CategoryService {
     }
     public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
+    }
+    public Optional<Category> updateCategory(Long categoryId, Category categoryDetails) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        if (categoryOptional.isPresent()) {
+            Category category = categoryOptional.get();
+            category.setName(categoryDetails.getName());
+            category.setDescription(categoryDetails.getDescription());
+            categoryRepository.save(category);
+            return Optional.of(category);
+        } else {
+            return Optional.empty();
+        }
     }
 }

@@ -10,18 +10,17 @@ import java.util.List;
 @Entity
 @Table(name = "carts")
 public class Cart {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id") // This establishes the ManyToOne relationship
+    @JoinColumn(name = "user_id")
     private Utilisateur user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CartItem> cartItems = new ArrayList<>();
-    private String status; // Add status field
+    private String status;
 
     public Cart(Long id, Utilisateur user, List<CartItem> cartItems) {
         this.id = id;

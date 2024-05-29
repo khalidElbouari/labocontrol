@@ -17,8 +17,6 @@ import java.util.Optional;
 public class ProductService {
     private ProductRepository productRepository;
     @Autowired
-    private PictureService pictureService;
-    @Autowired
     public ProductService(ProductRepository productRepository){
         this.productRepository= productRepository;
     }
@@ -28,7 +26,6 @@ public class ProductService {
     }
     public boolean deleteProduct(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
-
         if (productOptional.isPresent()) {
             productRepository.deleteById(id);
             return true;
@@ -39,10 +36,8 @@ public class ProductService {
 
 
     public Product addProduct(Product product) {
-        // Save the product to the database
         return productRepository.save(product);
     }
-
 
 
     public Product getProductById(Long id) {
@@ -51,9 +46,6 @@ public class ProductService {
     }
 
     public Product updateProduct(Product product) {
-        // This assumes your Product entity is managed by JPA/Hibernate
-        // If it's not, you might need to implement a custom update logic
-        // or use a different approach to update the product
         return productRepository.save(product);
     }
 }

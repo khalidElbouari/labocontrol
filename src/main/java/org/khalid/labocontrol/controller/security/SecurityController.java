@@ -89,37 +89,7 @@ public class SecurityController {
         return jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
     }
 
-        /*@PostMapping("/login")
-        public Map<String, String> login(String username, String password) {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
-            // Get the authenticated user details
-            Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
-            String fullName=utilisateur.getNom()+' '+utilisateur.getPrenom();
-            // Fetch the profile picture URL for the authenticated user
-            String profilePictureUrl = "http://localhost:8055/" + utilisateur.getPhotoName();
-            byte[] imageData=utilisateur.getImageData();
-            Instant instant = Instant.now();
-            String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
-            JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
-                    .issuedAt(instant)
-                    .expiresAt(instant.plus(20, ChronoUnit.MINUTES))
-                    .subject(username)
-                    .claim("scope", scope)
-                    .claim("profilePictureUrl", profilePictureUrl)
-                    .claim("fullName", fullName)
-                    .claim("imageData", imageData)
-                    .build();
-            JwtEncoderParameters jwtEncoderParameters =
-                    JwtEncoderParameters.from(
-                            JwsHeader.with(MacAlgorithm.HS512).build(),
-                            jwtClaimsSet
-                    );
-            String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-            return Map.of("access-token", jwt);
-        }
-*/
+
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerNewUser(@RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture,
                                                                @RequestParam("nom") String nom,

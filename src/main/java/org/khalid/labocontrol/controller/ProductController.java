@@ -26,7 +26,7 @@ public class ProductController {
 
     @Autowired
     public ProductController(ProductService productService,CategoryService categoryService,
-                             CartItemService cartItemService     ) {
+                             CartItemService cartItemService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.cartItemService = cartItemService;
@@ -57,7 +57,6 @@ public class ProductController {
             if (categoryObject == null) {
                 return new ResponseEntity<>("Category with ID " + categoryId + " not found", HttpStatus.NOT_FOUND);
             }
-
             // Read image data as byte array
             byte[] imageData = image.getBytes();
 
@@ -78,6 +77,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id,
                                                  @RequestParam("image") MultipartFile image,
                                                  @RequestParam("name") String name,
@@ -91,10 +91,8 @@ public class ProductController {
             if (existingProduct == null) {
                 return ResponseEntity.notFound().build();
             }
-
             // Read image data as byte array
             byte[] imageData = image.getBytes();
-
             // Update the existing product with the new values
             existingProduct.setName(name);
             existingProduct.setDescription(description);
@@ -103,7 +101,6 @@ public class ProductController {
             Category c=categoryService.getCategoryById(Long.parseLong(category));
             existingProduct.setCategory(c);
             existingProduct.setImageData(imageData);
-
             // Save the updated product to the database
             Product updatedProduct = productService.updateProduct(existingProduct);
 
@@ -134,6 +131,7 @@ public class ProductController {
             }
         }
     }
+
 
 
 }

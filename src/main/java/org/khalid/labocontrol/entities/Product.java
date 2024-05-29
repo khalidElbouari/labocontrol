@@ -16,13 +16,9 @@ public class Product {
     @ManyToOne
     private Category category;
     @Lob
-    @Column(length = 1048576) // Specify the desired length for the column (in bytes)
+    @Column(length = 1048576)
     private byte[] imageData;
-
-    // New field for product image
-    private String imagePath; // Add a new attribute to store the image path
-
-
+    private String imagePath;
     public Product(Long id, String name, String description, double price, int stockQuantity, Category category, byte[] imageData, String imagePath) {
         this.id = id;
         this.name = name;

@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("http://localhost:4200/")
@@ -41,4 +42,17 @@ public class CategoryController {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok().build();
     }
+
+
+    @PutMapping("/update/{categoryId}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
+        Optional<Category> updatedCategory = categoryService.updateCategory(categoryId, category);
+        if (updatedCategory.isPresent()) {
+            return ResponseEntity.ok().body(updatedCategory.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
