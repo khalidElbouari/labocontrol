@@ -25,8 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.roleRepository = roleRepository;
 
     }
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

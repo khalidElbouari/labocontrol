@@ -50,6 +50,11 @@ public class ProductController {
                                         @RequestParam("category") String category,
                                         @RequestParam("stockQuantity") int stockQuantity,
                                         @RequestParam("price") double price) {
+        // Validate the product
+        ResponseEntity<?> validationResponse = validateProduct(name, description, category, price, stockQuantity, image);
+        if (validationResponse != null) {
+            return validationResponse; // Return validation error if any
+        }
         try {
             // Convert category to Category object if needed
             Long categoryId = Long.parseLong(category);
@@ -133,5 +138,26 @@ public class ProductController {
     }
 
 
-
+    private ResponseEntity<?> validateProduct(String name, String description, String category, double price, int stockQuantity, MultipartFile image) {
+        // Validate the input parameters
+        if (name == null || name.isEmpty()) {
+            return new ResponseEntity<>("Name is required", HttpStatus.BAD_REQUEST);
+        }
+        if (description == null || description.isEmpty()) {
+            return new ResponseEntity<>("Description is required", HttpStatus.BAD_REQUEST);
+        }
+        if (category == null || category.isEmpty()) {
+            return new ResponseEntity<>("Category is required", HttpStatus.BAD_REQUEST);
+        }
+        if (price <= 0) {
+            return new ResponseEntity<>("Price must be greater than 0", HttpStatus.BAD_REQUEST);
+        }
+        if (stockQuantity < 0) {
+            return new ResponseEntity<>("Stock quantity must be non-negative", HttpStatus.BAD_REQUEST);
+        }
+        if (image == null || image.isEmpty()) {
+            return new ResponseEntity<>("Image is required", HttpStatus.BAD_REQUEST);
+        }
+        return null; // No validation errors
+    }
 }
